@@ -104,31 +104,13 @@ Protección Civil recibe reportes principalmente por WhatsApp y no cuenta con un
 
 # Arquitectura Obligatoria
 
-Ciudadano
-
-↓
-
-Chat Web
-
-↓
-
-Laravel
-
-↓
-
-MCP Server
-
-↓
-
-Azure AI Foundry Agent
-
-↓
-
-Herramientas MCP
-
-↓
-
-Base de Datos SQLite
+1. Ciudadano
+2. Chat Web
+3. Laravel
+4. MCP Server
+5. Azure AI Foundry Agent
+7. Herramientas MCP
+8. Base de Datos SQLite
 
 ---
 
@@ -236,29 +218,15 @@ Tipos de reporte:
 
 Todo reporte debe seguir el siguiente ciclo:
 
-Registrado
-
-↓
-
-Asignado
-
-↓
-
-En Proceso
-
-↓
-
-Atendido
-
-↓
-
-Cerrado
+1. Registrado
+2. Asignado
+3. En Proceso
+4. Atendido
+5. Cerrado
 
 Opcionalmente:
 
-↓
-
-Cancelado
+- Cancelado
 
 No se deben crear estatus fuera de este flujo sin autorización.
 

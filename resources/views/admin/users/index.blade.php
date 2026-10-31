@@ -1,0 +1,20 @@
+<x-app-layout>
+    <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
+        <div><p class="text-uppercase small fw-semibold text-secondary mb-1">Administración</p><h1 class="sirca-page-title mb-1">Usuarios internos</h1><p class="text-body-secondary mb-0">Administra cuentas, roles y adscripción institucional.</p></div>
+        <a class="btn btn-primary" href="{{ route('admin.users.create') }}">Agregar usuario</a>
+    </div>
+    @if (session('status'))<div class="alert alert-success" role="status">{{ session('status') }}</div>@endif
+    <section class="card border-0 shadow-sm rounded-1 mb-4"><div class="card-body">
+        <form class="row g-3 align-items-end" method="GET">
+            <div class="col-12 col-md-5"><label class="form-label" for="search">Buscar</label><input class="form-control" id="search" name="search" value="{{ request('search') }}" placeholder="Nombre o correo"></div>
+            <div class="col-6 col-md-3"><label class="form-label" for="role_id">Rol</label><select class="form-select" id="role_id" name="role_id"><option value="">Todos</option>@foreach ($roles as $role)<option value="{{ $role->id }}" @selected((string) request('role_id') === (string) $role->id)>{{ $role->name }}</option>@endforeach</select></div>
+            <div class="col-6 col-md-2"><label class="form-label" for="department_id">Dirección</label><select class="form-select" id="department_id" name="department_id"><option value="">Todas</option>@foreach ($departments as $department)<option value="{{ $department->id }}" @selected((string) request('department_id') === (string) $department->id)>{{ $department->name }}</option>@endforeach</select></div>
+            <div class="col-6 col-md-2"><label class="form-label" for="status">Estado</label><select class="form-select" id="status" name="status"><option value="">Activos</option><option value="inactive" @selected(request('status') === 'inactive')>Inactivos</option><option value="all" @selected(request('status') === 'all')>Todos</option></select></div>
+            <div class="col-12 col-md-auto d-grid"><button class="btn btn-outline-primary" type="submit">Filtrar</button></div>
+        </form>
+    </div></section>
+    <section class="card border-0 shadow-sm rounded-1"><div class="table-responsive"><table class="table table-hover align-middle mb-0">
+        <thead class="table-light"><tr><th>Nombre</th><th>Correo</th><th>Rol</th><th>Dirección</th><th>Estado</th><th class="text-end">Acciones</th></tr></thead>
+        <tbody>@forelse ($users as $user)<tr><td class="fw-semibold">{{ $user->name }}</td><td>{{ $user->email }}</td><td>{{ $user->role?->name ?? 'Sin rol' }}</td><td>{{ $user->department?->name ?? 'Global' }}</td><td><span class="badge {{ $user->trashed() ? 'text-bg-secondary' : 'text-bg-success' }}">{{ $user->trashed() ? 'Inactivo' : 'Activo' }}</span></td><td class="text-end"><div class="d-inline-flex gap-2">@if ($user->trashed())<form method="POST" action="{{ route('admin.users.restore', $user) }}">@csrf @method('PATCH')<button class="btn btn-sm btn-outline-success" type="submit">Reactivar</button></form>@else<a class="btn btn-sm btn-outline-secondary" href="{{ route('admin.users.edit', $user) }}">Editar</a>@can('delete', $user)<form method="POST" action="{{ route('admin.users.destroy', $user) }}" onsubmit="return confirm('¿Desactivar esta cuenta? Se conservará su historial.')">@csrf @method('DELETE')<button class="btn btn-sm btn-outline-danger" type="submit">Desactivar</button></form>@endcan @endif</div></td></tr>@empty<tr><td colspan="6" class="text-center text-body-secondary py-5">No se encontraron usuarios.</td></tr>@endforelse</tbody>
+    </table></div>@if ($users->hasPages())<div class="card-footer bg-white">{{ $users->links() }}</div>@endif</section>
+</x-app-layout>

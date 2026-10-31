@@ -11,6 +11,8 @@ class Evidence extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $table = 'evidences';
+
     protected $fillable = [
         'report_id',
         'uploaded_by_user_id',

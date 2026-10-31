@@ -1,3 +1,469 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'bootstrap/dist/css/bootstrap.min.css';
+
+:root {
+	--bs-primary: #8c1d40;
+	--bs-primary-rgb: 140, 29, 64;
+	--sirca-guinda: #8c1d40;
+	--sirca-guinda-dark: #611232;
+	--sirca-guinda-deep: #3f0b20;
+	--sirca-guinda-soft: #ead9df;
+	--bs-secondary: #be955b;
+	--bs-secondary-rgb: 190, 149, 91;
+	--bs-success: #1e5b4f;
+	--bs-success-rgb: 30, 91, 79;
+	--bs-dark: #161a1d;
+	--bs-body-color: #30242a;
+	--bs-body-bg: #f2e9ed;
+	--bs-link-color: #8c1d40;
+	--bs-link-hover-color: #611232;
+}
+
+body {
+	min-width: 320px;
+	font-family: Figtree, "Segoe UI", sans-serif;
+	background: #f2e9ed;
+}
+
+.sirca-topbar {
+	min-height: 76px;
+	background: linear-gradient(105deg, var(--sirca-guinda-dark), var(--sirca-guinda) 58%, #9f294f);
+	border-bottom: 4px solid var(--bs-secondary);
+	box-shadow: 0 3px 14px rgb(63 11 32 / 22%);
+}
+
+.sirca-topbar .navbar-brand,
+.sirca-topbar .navbar-brand:hover,
+.sirca-topbar .sirca-brand,
+.sirca-topbar .sirca-brand:hover,
+.sirca-topbar .sirca-brand__name,
+.sirca-topbar .sirca-brand__name small,
+.sirca-topbar .text-body-secondary {
+	color: #fff !important;
+}
+
+.sirca-topbar .navbar-brand small {
+	color: #f1dfe5 !important;
+}
+
+.sirca-topbar .btn-light {
+	--bs-btn-color: #fff;
+	--bs-btn-bg: rgb(255 255 255 / 10%);
+	--bs-btn-border-color: rgb(255 255 255 / 40%);
+	--bs-btn-hover-color: var(--sirca-guinda-dark);
+	--bs-btn-hover-bg: #fff;
+	--bs-btn-hover-border-color: #fff;
+	--bs-btn-active-color: var(--sirca-guinda-dark);
+	--bs-btn-active-bg: #f6e9ed;
+	--bs-btn-active-border-color: #f6e9ed;
+}
+
+.sirca-brand {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.75rem;
+	color: inherit;
+	text-decoration: none;
+}
+
+.sirca-brand__crest {
+	width: 46px;
+	height: 46px;
+	object-fit: contain;
+	flex: 0 0 auto;
+	padding: 3px;
+	border-radius: 4px;
+	background: #fff;
+}
+
+.sirca-brand__image {
+	display: block;
+	flex: 0 0 auto;
+	object-fit: contain;
+}
+
+.sirca-brand__image--dark {
+	width: 48px;
+	height: 54px;
+}
+
+.sirca-brand__image--color {
+	width: min(100%, 190px);
+	max-height: 150px;
+}
+
+.sirca-brand__logo {
+	width: clamp(110px, 13vw, 170px);
+	max-height: 48px;
+	object-fit: contain;
+	flex: 0 1 auto;
+	padding: 3px 6px;
+	border-radius: 4px;
+	background: #fff;
+}
+
+.sirca-brand__name {
+	font-size: 1rem;
+	font-weight: 700;
+	line-height: 1.15;
+}
+
+.sirca-brand__name small {
+	display: block;
+	margin-top: 0.2rem;
+	font-size: 0.75rem;
+	font-weight: 500;
+}
+
+.sirca-shell {
+	min-height: calc(100vh - 76px);
+}
+
+.sirca-sidebar {
+	width: 248px;
+	flex: 0 0 248px;
+	background: linear-gradient(180deg, var(--sirca-guinda-dark), var(--sirca-guinda-deep));
+	border-right: 1px solid rgb(255 255 255 / 12%);
+	box-shadow: 4px 0 16px rgb(63 11 32 / 10%);
+}
+
+.sirca-sidebar .nav-link {
+	color: #f5e9ed;
+	border: 1px solid transparent;
+	border-radius: 5px;
+	padding: 0.7rem 0.85rem;
+}
+
+.sirca-sidebar .nav-link:hover,
+.sirca-sidebar .nav-link.active {
+	background: rgb(255 255 255 / 12%);
+	border-color: rgb(255 255 255 / 20%);
+	color: #fff;
+}
+
+.sirca-sidebar .nav-link.active {
+	box-shadow: inset 3px 0 0 var(--bs-secondary);
+}
+
+.sirca-sidebar .text-white-50 {
+	color: #e3c3cf !important;
+}
+
+.sirca-sidebar-footer {
+	display: flex;
+	align-items: center;
+	gap: 0.65rem;
+	border-top: 1px solid rgb(255 255 255 / 18%);
+}
+
+.sirca-sidebar__crest {
+	width: 34px;
+	height: 40px;
+	flex: 0 0 auto;
+	object-fit: contain;
+}
+
+.sirca-main {
+	min-width: 0;
+	background: linear-gradient(135deg, #f3e8ec, #f8f2f4 52%, #efe0e6);
+}
+
+.sirca-main .card,
+.auth-panel {
+	background-color: #fffafb;
+	border: 1px solid #e6d3db !important;
+	box-shadow: 0 4px 14px rgb(63 11 32 / 8%) !important;
+}
+
+.sirca-main .card-header,
+.sirca-main .card-footer {
+	background-color: #f6edf0 !important;
+	border-color: #e6d3db;
+}
+
+.sirca-main .table thead th {
+	background-color: #ead9df;
+	color: var(--sirca-guinda-dark);
+	border-bottom-color: #d6b7c3;
+}
+
+.sirca-main .table {
+	--bs-table-hover-bg: #f8edf1;
+	--bs-table-border-color: #eadde2;
+}
+
+.sirca-main .table-light,
+.sirca-main .table-light > th,
+.sirca-main .table-light > td {
+	--bs-table-bg: #ead9df;
+	--bs-table-color: var(--sirca-guinda-dark);
+}
+
+.sirca-main .form-control,
+.sirca-main .form-select,
+.auth-panel .form-control {
+	border-color: #cbb1bc;
+}
+
+.sirca-main .form-control:focus,
+.sirca-main .form-select:focus,
+.auth-panel .form-control:focus {
+	border-color: var(--sirca-guinda);
+	box-shadow: 0 0 0 0.2rem rgb(140 29 64 / 18%);
+}
+
+.sirca-main .btn-primary,
+.auth-panel .btn-primary {
+	--bs-btn-color: #fff;
+	--bs-btn-bg: var(--sirca-guinda);
+	--bs-btn-border-color: var(--sirca-guinda);
+	--bs-btn-hover-color: #fff;
+	--bs-btn-hover-bg: var(--sirca-guinda-dark);
+	--bs-btn-hover-border-color: var(--sirca-guinda-dark);
+	--bs-btn-active-color: #fff;
+	--bs-btn-active-bg: var(--sirca-guinda-deep);
+	--bs-btn-active-border-color: var(--sirca-guinda-deep);
+	--bs-btn-disabled-color: #fff;
+	--bs-btn-disabled-bg: #8f6675;
+	--bs-btn-disabled-border-color: #8f6675;
+}
+
+.sirca-main .btn-outline-primary,
+.auth-panel .btn-outline-primary {
+	--bs-btn-color: var(--sirca-guinda);
+	--bs-btn-border-color: var(--sirca-guinda);
+	--bs-btn-hover-color: #fff;
+	--bs-btn-hover-bg: var(--sirca-guinda);
+	--bs-btn-hover-border-color: var(--sirca-guinda);
+	--bs-btn-active-color: #fff;
+	--bs-btn-active-bg: var(--sirca-guinda-dark);
+	--bs-btn-active-border-color: var(--sirca-guinda-dark);
+}
+
+.sirca-main .btn-secondary,
+.auth-panel .btn-secondary {
+	--bs-btn-color: #22170c;
+	--bs-btn-bg: var(--bs-secondary);
+	--bs-btn-border-color: var(--bs-secondary);
+	--bs-btn-hover-color: #22170c;
+	--bs-btn-hover-bg: #d1aa71;
+	--bs-btn-hover-border-color: #d1aa71;
+}
+
+.sirca-main .btn-outline-secondary,
+.auth-panel .btn-outline-secondary {
+	--bs-btn-color: var(--sirca-guinda-dark);
+	--bs-btn-border-color: #a45b73;
+	--bs-btn-hover-color: #fff;
+	--bs-btn-hover-bg: var(--sirca-guinda-dark);
+	--bs-btn-hover-border-color: var(--sirca-guinda-dark);
+}
+
+.sirca-main .btn-success,
+.auth-panel .btn-success {
+	--bs-btn-color: #fff;
+	--bs-btn-bg: #1e5b4f;
+	--bs-btn-border-color: #1e5b4f;
+	--bs-btn-hover-color: #fff;
+	--bs-btn-hover-bg: #16463d;
+	--bs-btn-hover-border-color: #16463d;
+}
+
+.sirca-main .btn-danger,
+.auth-panel .btn-danger {
+	--bs-btn-color: #fff;
+	--bs-btn-bg: #7d1738;
+	--bs-btn-border-color: #7d1738;
+	--bs-btn-hover-color: #fff;
+	--bs-btn-hover-bg: #541026;
+	--bs-btn-hover-border-color: #541026;
+}
+
+.sirca-main .btn-light:not(.dropdown-item),
+.auth-panel .btn-light {
+	--bs-btn-color: var(--sirca-guinda-dark);
+	--bs-btn-bg: #f2e4e9;
+	--bs-btn-border-color: #e3cbd4;
+	--bs-btn-hover-color: #fff;
+	--bs-btn-hover-bg: var(--sirca-guinda);
+	--bs-btn-hover-border-color: var(--sirca-guinda);
+}
+
+.sirca-main .btn-link,
+.auth-panel .btn-link {
+	--bs-btn-color: var(--sirca-guinda);
+	--bs-btn-hover-color: var(--sirca-guinda-dark);
+}
+
+.sirca-main .alert-success {
+	--bs-alert-color: #16463d;
+	--bs-alert-bg: #e0eee9;
+	--bs-alert-border-color: #b7d3c9;
+}
+
+.sirca-main .alert-danger {
+	--bs-alert-color: #541026;
+	--bs-alert-bg: #f2e0e6;
+	--bs-alert-border-color: #d9b3c0;
+}
+
+.sirca-kpi {
+	border: 1px solid #e6d3db !important;
+	border-left: 5px solid var(--sirca-guinda) !important;
+	border-radius: 5px;
+	box-shadow: 0 4px 14px rgb(63 11 32 / 9%) !important;
+}
+
+.sirca-kpi.kpi-success {
+	border-left-color: var(--bs-success);
+}
+
+.sirca-kpi.kpi-gold {
+	border-left-color: var(--bs-secondary);
+}
+
+.sirca-page-title {
+	color: var(--sirca-guinda-dark);
+	font-size: 1.45rem;
+	font-weight: 650;
+}
+
+.auth-panel {
+	width: min(100% - 2rem, 440px);
+	border-radius: 7px;
+}
+
+.auth-panel .card-header {
+	background: #f6edf0 !important;
+	border-bottom: 1px solid #e6d3db !important;
+}
+
+.auth-panel .sirca-brand {
+	width: 100%;
+}
+
+.auth-panel h1,
+.auth-panel h2 {
+	color: var(--sirca-guinda-dark);
+}
+
+.auth-panel .alert-success {
+	--bs-alert-color: #16463d;
+	--bs-alert-bg: #e0eee9;
+	--bs-alert-border-color: #b7d3c9;
+}
+
+.auth-backdrop {
+	background: linear-gradient(135deg, #3f0b20, #611232 42%, #8c1d40);
+}
+
+.sirca-main .text-primary,
+.sirca-main a:not(.btn):not(.dropdown-item) {
+	color: var(--sirca-guinda) !important;
+}
+
+.sirca-main .badge.text-bg-success {
+	background-color: #1e5b4f !important;
+}
+
+.sirca-main .badge.text-bg-danger {
+	background-color: #7d1738 !important;
+}
+
+@media (max-width: 767.98px) {
+	.sirca-sidebar {
+		width: 100%;
+		flex-basis: 100%;
+	}
+
+	.sirca-sidebar .nav {
+		flex-direction: row;
+		overflow-x: auto;
+	}
+
+	.sirca-sidebar .nav-link {
+		white-space: nowrap;
+	}
+
+	.sirca-topbar {
+		min-height: 68px;
+	}
+
+	.sirca-topbar .d-flex.align-items-center.gap-3 {
+		gap: 0.5rem !important;
+	}
+
+	.sirca-brand__crest {
+		width: 36px;
+		height: 36px;
+	}
+
+	.sirca-brand__image--dark {
+		width: 38px;
+		height: 42px;
+	}
+
+	.sirca-brand__image--color {
+		width: min(100%, 155px);
+		max-height: 120px;
+	}
+
+	.sirca-brand__logo {
+		width: 100px;
+		max-height: 36px;
+	}
+}
+
+@media (max-width: 575.98px) {
+	.sirca-topbar {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		gap: 0.45rem;
+		padding: 0.55rem 0.75rem !important;
+	}
+
+	.sirca-topbar > .sirca-brand {
+		min-width: 0;
+	}
+
+	.sirca-topbar > .d-flex.align-items-center.gap-3 {
+		width: 100%;
+		min-width: 0;
+		justify-content: space-between;
+	}
+
+	.sirca-topbar .dropdown {
+		min-width: 0;
+		max-width: 58%;
+	}
+
+	.sirca-topbar .dropdown-toggle {
+		max-width: 100%;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.sirca-sidebar .nav {
+		flex-wrap: wrap;
+		overflow: visible;
+	}
+
+	.sirca-sidebar .nav > .small {
+		flex: 0 0 100%;
+		margin-top: 0.6rem !important;
+		margin-bottom: 0.2rem !important;
+	}
+
+	.sirca-sidebar .nav-link {
+		flex: 0 0 auto;
+	}
+
+	.sirca-main {
+		padding-inline: 0.75rem !important;
+		overflow-x: hidden;
+	}
+
+	.sirca-main .row {
+		--bs-gutter-x: 0.75rem;
+	}
+}

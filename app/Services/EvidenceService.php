@@ -17,34 +17,54 @@ class EvidenceService
         $path = $file->store("reports/{$report->id}/evidence", 'local');
 
         try {
-            return DB::transaction(function () use ($report, $actor, $file, $path, $source): Evidence {
-                $evidence = $report->evidences()->create([
-                    'uploaded_by_user_id' => $actor?->id,
-                    'file_path' => $path,
-                    'original_name' => $file->getClientOriginalName(),
-                    'mime_type' => $file->getMimeType() ?: 'application/octet-stream',
-                    'file_size' => $file->getSize(),
-                ]);
-
-                $report->auditLogs()->create([
-                    'actor_user_id' => $actor?->id,
-                    'event' => 'report.evidence_uploaded',
-                    'new_values' => ['evidence_id' => $evidence->id, 'mime_type' => $evidence->mime_type, 'source' => $source],
-                ]);
-
-                $report->activities()->create([
-                    'user_id' => $actor?->id,
-                    'type' => 'evidence',
-                    'description' => 'Se adjuntó evidencia: '.$evidence->original_name,
-                    'metadata' => ['evidence_id' => $evidence->id, 'source' => $source],
-                ]);
-
-                return $evidence;
-            });
+            return $this->registerStoredFile(
+                $report,
+                $actor,
+                $path,
+                $file->getClientOriginalName(),
+                $file->getMimeType() ?: 'application/octet-stream',
+                (int) $file->getSize(),
+                $source,
+            );
         } catch (Throwable $exception) {
             Storage::disk('local')->delete($path);
 
             throw $exception;
         }
+    }
+
+    public function registerStoredFile(
+        Report $report,
+        ?User $actor,
+        string $path,
+        string $originalName,
+        string $mimeType,
+        int $fileSize,
+        string $source,
+    ): Evidence {
+        return DB::transaction(function () use ($report, $actor, $path, $originalName, $mimeType, $fileSize, $source): Evidence {
+            $evidence = $report->evidences()->create([
+                'uploaded_by_user_id' => $actor?->id,
+                'file_path' => $path,
+                'original_name' => $originalName,
+                'mime_type' => $mimeType,
+                'file_size' => $fileSize,
+            ]);
+
+            $report->auditLogs()->create([
+                'actor_user_id' => $actor?->id,
+                'event' => 'report.evidence_uploaded',
+                'new_values' => ['evidence_id' => $evidence->id, 'mime_type' => $evidence->mime_type, 'source' => $source],
+            ]);
+
+            $report->activities()->create([
+                'user_id' => $actor?->id,
+                'type' => 'evidence',
+                'description' => 'Se adjuntó evidencia: '.$evidence->original_name,
+                'metadata' => ['evidence_id' => $evidence->id, 'source' => $source],
+            ]);
+
+            return $evidence;
+        });
     }
 }

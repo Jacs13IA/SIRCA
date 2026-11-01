@@ -1,5 +1,8 @@
 /.phpunit.cache
 /node_modules
+/mcp-server/node_modules
+/mcp-server/.env
+/mcp-server/coverage
 /public/build
 /public/hot
 /public/storage

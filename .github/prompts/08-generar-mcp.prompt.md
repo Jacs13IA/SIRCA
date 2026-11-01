@@ -15,11 +15,17 @@ Crear herramientas MCP consumidas por Azure AI Foundry.
 Herramientas requeridas:
 
 - create_report
-- update_report_status
 - get_report_status
 - upload_evidence
 - search_reports
 - list_report_types
+
+Alcance ciudadano:
+
+- No registrar `update_report_status`; los cambios de estatus son administrativos.
+- `search_reports` acepta únicamente un folio exacto, sin filtros globales.
+- `upload_evidence` recibe una referencia temporal privada emitida por Laravel; nunca descarga una URL arbitraria.
+- Autenticar Foundry al MCP con una credencial distinta de la usada por MCP hacia Laravel.
 
 Restricción:
 

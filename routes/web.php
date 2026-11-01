@@ -6,12 +6,17 @@ use App\Http\Controllers\Admin\DepartmentController;
 use App\Http\Controllers\Admin\ReportTypeController;
 use App\Http\Controllers\Admin\AuditLogController;
 use App\Http\Controllers\EvidenceController;
+use App\Http\Controllers\EvidenceStagingController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReportController;
 use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/login');
+
+Route::post('/evidence-staging', [EvidenceStagingController::class, 'store'])
+    ->middleware('throttle:10,1')
+    ->name('evidence-staging.store');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');

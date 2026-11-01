@@ -27,12 +27,12 @@ SQLite
 ## Herramientas MCP
 
 - create_report
-- update_report_status
 - get_report_status
-- get_report_details
 - upload_evidence
 - search_reports
 - list_report_types
+
+El MCP ciudadano no registra `update_report_status` ni `get_report_details`. La búsqueda ciudadana requiere folio exacto. La evidencia se recibe mediante una referencia temporal emitida por Laravel; no descargar URLs arbitrarias.
 
 ## Código
 

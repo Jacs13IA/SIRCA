@@ -143,6 +143,44 @@ class ReportApiTest extends TestCase
             ->assertJsonPath('message', 'Recurso no encontrado.');
     }
 
+    public function test_report_search_requires_an_exact_folio_and_returns_minimal_data(): void
+    {
+        $reportType = ReportType::query()->firstOrFail();
+        $created = $this->withToken('test-mcp-api-token')
+            ->postJson('/api/v1/reports', $this->reportPayload($reportType->id));
+        $folio = $created->json('data.folio');
+
+        $this->withToken('test-mcp-api-token')
+            ->getJson('/api/v1/reports?folio='.$folio)
+            ->assertOk()
+            ->assertJsonCount(1, 'data.reports')
+            ->assertJsonPath('data.reports.0.folio', $folio)
+            ->assertJsonMissingPath('data.reports.0.citizen')
+            ->assertJsonMissingPath('data.reports.0.description')
+            ->assertJsonMissingPath('data.reports.0.location');
+    }
+
+    public function test_report_search_rejects_missing_or_partial_folio(): void
+    {
+        $this->withToken('test-mcp-api-token')
+            ->getJson('/api/v1/reports')
+            ->assertBadRequest()
+            ->assertJsonStructure(['data' => ['errors' => ['folio']]]);
+
+        $this->withToken('test-mcp-api-token')
+            ->getJson('/api/v1/reports?folio=SIR-2026')
+            ->assertBadRequest()
+            ->assertJsonStructure(['data' => ['errors' => ['folio']]]);
+    }
+
+    public function test_report_search_rejects_broad_filters(): void
+    {
+        $this->withToken('test-mcp-api-token')
+            ->getJson('/api/v1/reports?folio=SIR-2026-AB12CD34&status=registrado')
+            ->assertBadRequest()
+            ->assertJsonStructure(['data' => ['errors' => ['status']]]);
+    }
+
     private function reportPayload(int $reportTypeId): array
     {
         return [

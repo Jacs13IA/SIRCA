@@ -25,33 +25,12 @@ class ReportController extends Controller
     public function index(SearchReportsRequest $request): JsonResponse
     {
         $filters = $request->validated();
-        $reports = Report::query()
-            ->with(['department:id,name', 'reportType:id,name', 'status:id,code,name', 'citizen:id,name'])
-            ->latest();
-
-        if (filled($filters['folio'] ?? null)) {
-            $reports->where('folio', 'like', '%'.trim($filters['folio']).'%');
-        }
-
-        if (filled($filters['report_type_id'] ?? null)) {
-            $reports->where('report_type_id', $filters['report_type_id']);
-        }
-
-        if (filled($filters['status'] ?? null)) {
-            $reports->whereHas('status', fn ($query) => $query->where('code', $filters['status']));
-        }
-
-        if (filled($filters['date_from'] ?? null)) {
-            $reports->whereDate('created_at', '>=', $filters['date_from']);
-        }
-
-        if (filled($filters['date_to'] ?? null)) {
-            $reports->whereDate('created_at', '<=', $filters['date_to']);
-        }
-
-        $paginated = $reports->paginate((int) ($filters['per_page'] ?? 20))->withQueryString();
+        $paginated = Report::query()
+            ->with(['reportType:id,name', 'status:id,code,name'])
+            ->where('folio', $filters['folio'])
+            ->paginate(1);
         $items = $paginated->getCollection()
-            ->map(fn (Report $report) => (new ReportResource($report))->resolve($request))
+            ->map(fn (Report $report) => (new ReportStatusResource($report))->resolve($request))
             ->all();
 
         return ApiResponse::success('Reportes encontrados.', [

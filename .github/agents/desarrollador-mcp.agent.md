@@ -30,3 +30,5 @@ Herramientas mínimas:
 Nunca acceder directamente a SQLite.
 
 Consumir siempre APIs Laravel.
+
+Implementas el MCP ciudadano: `search_reports` requiere folio exacto y no se registra `update_report_status`. `upload_evidence` acepta una referencia temporal de Laravel, no una URL para descargar.

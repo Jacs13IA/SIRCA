@@ -27,7 +27,7 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->render(function (\Throwable $exception, Request $request) {
-            if (! $request->is('api/*')) {
+            if (! $request->is('api/*') && ! $request->routeIs('evidence-staging.store')) {
                 return null;
             }
 

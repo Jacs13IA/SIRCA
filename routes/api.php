@@ -15,4 +15,5 @@ Route::prefix('v1')
         Route::get('/report-status/{folio}', [ReportController::class, 'status'])->name('reports.status');
         Route::get('/reports/{folio}', [ReportController::class, 'show'])->name('reports.show');
         Route::post('/reports/{folio}/evidence', [EvidenceController::class, 'store'])->name('reports.evidence.store');
+        Route::post('/reports/{folio}/evidence/reference', [EvidenceController::class, 'storeReference'])->name('reports.evidence.reference.store');
     });

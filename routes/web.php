@@ -6,15 +6,19 @@ use App\Http\Controllers\Admin\DepartmentController;
 use App\Http\Controllers\Admin\ReportTypeController;
 use App\Http\Controllers\Admin\AuditLogController;
 use App\Http\Controllers\EvidenceController;
-use App\Http\Controllers\EvidenceStagingController;
+use App\Http\Controllers\Chat\ChatController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReportController;
 use Illuminate\Support\Facades\Route;
 
-Route::redirect('/', '/login');
+Route::view('/', 'chat.index')->name('chat.home');
 
-Route::post('/evidence-staging', [EvidenceStagingController::class, 'store'])
+Route::post('/chat/messages', [ChatController::class, 'send'])
+    ->middleware('throttle:20,1')
+    ->name('chat.messages.store');
+
+Route::post('/evidence-staging', [ChatController::class, 'storeEvidence'])
     ->middleware('throttle:10,1')
     ->name('evidence-staging.store');
 

@@ -39,4 +39,19 @@ return [
         'api_token' => env('MCP_API_TOKEN'),
     ],
 
+    'foundry' => [
+        'project_endpoint' => env('FOUNDRY_PROJECT_ENDPOINT'),
+        'agent_name' => env('FOUNDRY_AGENT_NAME'),
+        'model_deployment' => env('FOUNDRY_MODEL_DEPLOYMENT'),
+        'api_version' => env('FOUNDRY_API_VERSION', 'v1'),
+        'timeout' => (int) env('FOUNDRY_TIMEOUT', 45),
+        'identity_endpoint' => env('IDENTITY_ENDPOINT'),
+        'identity_header' => env('IDENTITY_HEADER'),
+        'azure_cli_config_dir' => env('AZURE_CONFIG_DIR') ?: (
+            PHP_OS_FAMILY === 'Windows' && env('USERPROFILE')
+                ? rtrim((string) env('USERPROFILE'), '\\/') . DIRECTORY_SEPARATOR . '.azure'
+                : storage_path('app/private/azure-cli')
+        ),
+    ],
+
 ];

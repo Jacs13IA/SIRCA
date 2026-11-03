@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Report;
 use App\Models\StagedEvidence;
 use App\Models\Evidence;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -25,27 +26,60 @@ class StagedEvidenceService
             throw new RuntimeException('No fue posible almacenar la evidencia temporal.');
         }
 
-        $reference = Str::random(64);
+        $attempts = 0;
+        $lastException = null;
 
-        try {
-            $staged = StagedEvidence::query()->create([
-                'reference_hash' => hash('sha256', $reference),
-                'file_path' => $path,
-                'original_name' => $file->getClientOriginalName(),
-                'mime_type' => $file->getMimeType() ?: 'application/octet-stream',
-                'file_size' => (int) $file->getSize(),
-                'expires_at' => now()->addMinutes(30),
-            ]);
-        } catch (Throwable $exception) {
-            Storage::disk('local')->delete($path);
+        while ($attempts < 5) {
+            $reference = Str::random(64);
 
-            throw $exception;
+            try {
+                $staged = StagedEvidence::query()->create([
+                    'reference_hash' => hash('sha256', $reference),
+                    'file_path' => $path,
+                    'original_name' => $file->getClientOriginalName(),
+                    'mime_type' => $file->getMimeType() ?: 'application/octet-stream',
+                    'file_size' => (int) $file->getSize(),
+                    'expires_at' => now()->addMinutes(30),
+                ]);
+
+                return [
+                    'reference' => $reference,
+                    'expires_at' => $staged->expires_at->toIso8601String(),
+                ];
+            } catch (QueryException $exception) {
+                $lastException = $exception;
+
+                if (! $this->isRetryableReferenceStorageError($exception)) {
+                    Storage::disk('local')->delete($path);
+
+                    throw $exception;
+                }
+            } catch (Throwable $exception) {
+                Storage::disk('local')->delete($path);
+
+                throw $exception;
+            }
+
+            usleep(250000 * ($attempts + 1));
+            $attempts++;
         }
 
-        return [
-            'reference' => $reference,
-            'expires_at' => $staged->expires_at->toIso8601String(),
-        ];
+        Storage::disk('local')->delete($path);
+
+        throw $lastException instanceof QueryException
+            ? $lastException
+            : new RuntimeException('No fue posible crear la referencia de evidencia temporal.');
+    }
+
+    private function isRetryableReferenceStorageError(QueryException $exception): bool
+    {
+        $message = strtolower($exception->getMessage());
+
+        return str_contains($message, 'database is locked')
+            || str_contains($message, 'database table is locked')
+            || str_contains($message, 'unique constraint')
+            || str_contains($message, 'duplicate')
+            || str_contains($message, 'disk i/o error');
     }
 
     public function attach(string $reference, Report $report): Evidence
@@ -112,6 +146,15 @@ class StagedEvidenceService
         Storage::disk('local')->delete($sourcePath);
 
         return $evidence;
+    }
+
+    public function isAvailable(string $reference): bool
+    {
+        return StagedEvidence::query()
+            ->where('reference_hash', hash('sha256', $reference))
+            ->whereNull('consumed_at')
+            ->where('expires_at', '>', now())
+            ->exists();
     }
 
     public function purgeExpired(): int

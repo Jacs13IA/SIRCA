@@ -12,6 +12,7 @@ use Database\Seeders\ReportStatusSeeder;
 use Database\Seeders\ReportTypeSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
@@ -29,16 +30,17 @@ class EvidenceStagingTest extends TestCase
 
     public function test_private_evidence_can_be_staged_and_gets_a_short_lived_reference(): void
     {
-        $response = $this->withHeader('Accept', 'application/json')
+        $response = $this->withSession(['chat.foundry' => ['evidence_requested' => true]])
+            ->withHeader('Accept', 'application/json')
             ->post('/evidence-staging', [
                 'evidence' => UploadedFile::fake()->create('evidencia.pdf', 32, 'application/pdf'),
             ]);
 
         $response->assertCreated()
             ->assertJsonPath('success', true)
-            ->assertJsonStructure(['data' => ['reference', 'expires_at']]);
+            ->assertJsonMissingPath('data.reference');
 
-        $reference = $response->json('data.reference');
+        $reference = Crypt::decryptString(session('chat.foundry.pending_evidence.reference'));
         $this->assertMatchesRegularExpression('/^[A-Za-z0-9]{64}$/', $reference);
 
         $staged = StagedEvidence::query()->firstOrFail();
@@ -46,6 +48,7 @@ class EvidenceStagingTest extends TestCase
         $this->assertTrue($staged->expires_at->isFuture());
         Storage::disk('local')->assertExists($staged->file_path);
     }
+
 
     public function test_mcp_can_attach_a_staged_reference_once_and_audits_the_evidence(): void
     {
@@ -116,13 +119,7 @@ class EvidenceStagingTest extends TestCase
 
     private function stageEvidence(): string
     {
-        $response = $this->withHeader('Accept', 'application/json')
-            ->post('/evidence-staging', [
-                'evidence' => UploadedFile::fake()->create('evidencia.pdf', 32, 'application/pdf'),
-            ]);
-
-        $response->assertCreated();
-
-        return $response->json('data.reference');
+        return app(StagedEvidenceService::class)
+            ->stage(UploadedFile::fake()->create('evidencia.pdf', 32, 'application/pdf'))['reference'];
     }
 }

@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Models\Citizen;
 use App\Models\Report;
 use App\Models\ReportStatus;
 use App\Models\ReportType;
@@ -11,6 +10,8 @@ use Illuminate\Support\Str;
 
 class ReportRegistrationService
 {
+    public function __construct(private readonly CitizenIdentityService $citizenIdentity) {}
+
     public function register(array $data): Report
     {
         return DB::transaction(function () use ($data): Report {
@@ -21,13 +22,7 @@ class ReportRegistrationService
 
             abort_unless($reportType->department?->is_active, 404);
 
-            $citizenData = $data['citizen'];
-            $citizen = Citizen::query()->create([
-                'name' => $citizenData['name'],
-                'email' => $citizenData['email'] ?? null,
-                'phone' => $citizenData['phone'] ?? null,
-                'contact_consent' => (bool) ($citizenData['contact_consent'] ?? false),
-            ]);
+            $citizen = $this->citizenIdentity->resolveForReport($data['citizen']);
 
             $registeredStatus = ReportStatus::query()->where('code', 'registrado')->firstOrFail();
             $report = Report::query()->create([
@@ -55,6 +50,7 @@ class ReportRegistrationService
                 'event' => 'report.created_via_mcp',
                 'new_values' => [
                     'folio' => $report->folio,
+                    'citizen_id' => $citizen->id,
                     'report_type_id' => $reportType->id,
                     'department_id' => $reportType->department_id,
                     'report_status_id' => $registeredStatus->id,

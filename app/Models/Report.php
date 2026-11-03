@@ -37,7 +37,7 @@ class Report extends Model
 
     public function citizen(): BelongsTo
     {
-        return $this->belongsTo(Citizen::class);
+        return $this->belongsTo(Citizen::class)->withTrashed();
     }
 
     public function department(): BelongsTo

@@ -29,7 +29,7 @@
                         <dt class="col-sm-3 text-body-secondary">Ubicación</dt>
                         <dd class="col-sm-9">{{ $report->location }}</dd>
                         <dt class="col-sm-3 text-body-secondary">Ciudadano</dt>
-                        <dd class="col-sm-9">{{ $report->citizen->name ?: 'Sin nombre proporcionado' }}</dd>
+                        <dd class="col-sm-9">{{ $report->citizen?->name ?: 'Sin nombre proporcionado' }}</dd>
                         @if ($report->latitude && $report->longitude)
                             <dt class="col-sm-3 text-body-secondary">Coordenadas</dt>
                             <dd class="col-sm-9">{{ $report->latitude }}, {{ $report->longitude }}</dd>

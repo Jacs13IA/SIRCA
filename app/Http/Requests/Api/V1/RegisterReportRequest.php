@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Api\V1;
 
 use App\Models\ReportType;
+use App\Rules\ValidPhoneNumber;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
@@ -25,7 +26,7 @@ class RegisterReportRequest extends FormRequest
             'citizen' => ['required', 'array:name,email,phone,contact_consent'],
             'citizen.name' => ['required', 'string', 'max:255'],
             'citizen.email' => ['nullable', 'email', 'max:255'],
-            'citizen.phone' => ['nullable', 'string', 'max:30'],
+            'citizen.phone' => ['nullable', 'string', 'max:30', new ValidPhoneNumber],
             'citizen.contact_consent' => ['sometimes', 'boolean'],
         ];
     }

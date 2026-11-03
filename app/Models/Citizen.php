@@ -13,6 +13,8 @@ class Citizen extends Model
 
     protected $fillable = ['name', 'email', 'phone', 'contact_consent'];
 
+    protected $hidden = ['email_fingerprint', 'phone_fingerprint'];
+
     protected function casts(): array
     {
         return [

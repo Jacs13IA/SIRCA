@@ -39,6 +39,10 @@ return [
         'api_token' => env('MCP_API_TOKEN'),
     ],
 
+    'citizen_matching' => [
+        'key' => env('CITIZEN_MATCHING_KEY'),
+    ],
+
     'foundry' => [
         'project_endpoint' => env('FOUNDRY_PROJECT_ENDPOINT'),
         'agent_name' => env('FOUNDRY_AGENT_NAME'),

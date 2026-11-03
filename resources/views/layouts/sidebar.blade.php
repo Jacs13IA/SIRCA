@@ -12,6 +12,12 @@
             @if (Route::has('admin.users.index'))
                 <a class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}" href="{{ route('admin.users.index') }}">Usuarios</a>
             @endif
+            @if (Auth::user()->department_id === null && Route::has('admin.citizens.index'))
+                <a class="nav-link {{ request()->routeIs('admin.citizens.*') ? 'active' : '' }}" href="{{ route('admin.citizens.index') }}">Ciudadanos</a>
+            @endif
+            @if (Auth::user()->department_id === null && Route::has('admin.citizen-match-reviews.index'))
+                <a class="nav-link {{ request()->routeIs('admin.citizen-match-reviews.*') ? 'active' : '' }}" href="{{ route('admin.citizen-match-reviews.index') }}">Revisar coincidencias</a>
+            @endif
             @if (Route::has('admin.departments.index'))
                 <a class="nav-link {{ request()->routeIs('admin.departments.*') ? 'active' : '' }}" href="{{ route('admin.departments.index') }}">Direcciones</a>
             @endif

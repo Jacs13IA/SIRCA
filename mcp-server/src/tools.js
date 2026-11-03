@@ -14,7 +14,7 @@ export function createCitizenMcpServer(apiClient, logger) {
 
 export function registerCitizenTools(server, apiClient, logger) {
   server.registerTool('create_report', {
-    description: 'Registra un reporte ciudadano. Laravel genera el folio y el estatus inicial.',
+    description: 'Registra un reporte ciudadano. Los datos de contacto consentidos ayudan a vincular reportes de la misma persona.',
     inputSchema: {
       report_type_id: z.number().int().positive(),
       description: z.string().min(1).max(3000),
@@ -30,7 +30,7 @@ export function registerCitizenTools(server, apiClient, logger) {
     },
   }, async (input) => runTool('create_report', logger, async () => {
     if ((input.citizen.email || input.citizen.phone) && input.citizen.contact_consent !== true) {
-      throw new ToolArgumentError('Se requiere consentimiento para guardar datos de contacto.');
+      throw new ToolArgumentError('Se requiere consentimiento para guardar y vincular datos de contacto.');
     }
 
     const report = await apiClient.createReport(input);

@@ -4,6 +4,8 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\DepartmentController;
 use App\Http\Controllers\Admin\ReportTypeController;
+use App\Http\Controllers\Admin\CitizenController;
+use App\Http\Controllers\Admin\CitizenMatchReviewController;
 use App\Http\Controllers\Admin\AuditLogController;
 use App\Http\Controllers\EvidenceController;
 use App\Http\Controllers\Chat\ChatController;
@@ -38,6 +40,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('users', UserController::class)->except(['show']);
         Route::patch('users/{user}/restore', [UserController::class, 'restore'])->withTrashed()->name('users.restore');
+        Route::resource('citizens', CitizenController::class);
+        Route::patch('citizens/{citizen}/restore', [CitizenController::class, 'restore'])->withTrashed()->name('citizens.restore');
+        Route::get('citizen-match-reviews', [CitizenMatchReviewController::class, 'index'])->name('citizen-match-reviews.index');
+        Route::patch('citizen-match-reviews/{review}/resolve', [CitizenMatchReviewController::class, 'resolve'])->name('citizen-match-reviews.resolve');
         Route::resource('departments', DepartmentController::class)->except(['show', 'destroy']);
         Route::patch('departments/{department}/active', [DepartmentController::class, 'toggleActive'])->name('departments.toggle-active');
         Route::resource('report-types', ReportTypeController::class)->except(['show', 'destroy']);
